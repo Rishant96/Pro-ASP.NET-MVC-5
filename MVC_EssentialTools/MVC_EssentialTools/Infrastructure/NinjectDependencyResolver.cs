@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using MVC_EssentialTools.Models;
 using Ninject;
+using Ninject.Web.Common;
 
 namespace MVC_EssentialTools.Infrastructure
 {
@@ -28,7 +29,7 @@ namespace MVC_EssentialTools.Infrastructure
 
         private void AddBindings()
         {
-            kernel.Bind<IValueCalculator>().To<LinqValueCalculator>();
+            kernel.Bind<IValueCalculator>().To<LinqValueCalculator>().InRequestScope();
             kernel.Bind<IDiscountHelper>()
                 .To<DefaultDiscountHelper>().WithConstructorArgument("discountParam", 50M);
             kernel.Bind<IDiscountHelper>().
