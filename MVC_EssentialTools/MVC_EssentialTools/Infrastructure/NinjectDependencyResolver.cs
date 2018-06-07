@@ -8,27 +8,31 @@ namespace MVC_EssentialTools.Infrastructure
 {
     public class NinjectDependencyResolver : IDependencyResolver
     {
-        private IKernel _kernel;
+        private IKernel kernel;
 
-        public NinjectDependencyResolver(IKernel kernel)
+        public NinjectDependencyResolver(IKernel kernelParam)
         {
-            _kernel = kernel;
+            kernel = kernelParam;
             AddBindings();
         }
 
         public object GetService(Type serviceType)
         {
-            return _kernel.TryGet(serviceType);
+            return kernel.TryGet(serviceType);
         }
 
         public IEnumerable<object> GetServices(Type serviceType)
         {
-            return _kernel.GetAll(serviceType);
+            return kernel.GetAll(serviceType);
         }
 
         private void AddBindings()
         {
-            _kernel.Bind<IValueCalculator>().To<LinqValueCalculator>();
+            kernel.Bind<IValueCalculator>().To<LinqValueCalculator>();
+            kernel.Bind<IDiscountHelper>()
+                .To<DefaultDiscountHelper>().WithConstructorArgument("discountParam", 50M);
+            kernel.Bind<IDiscountHelper>().
+                To<FlexibleDiscountHelper>().WhenInjectedInto<LinqValueCalculator>();
         }
     }
 }
